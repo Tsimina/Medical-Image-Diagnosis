@@ -1,7 +1,7 @@
 import torch, torch.nn as nn, torch.optim as optim
 import numpy as np
 import os
-from torch.cuda.amp import GradScaler
+from torch.amp import GradScaler
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchvision.models import efficientnet_b0
@@ -135,14 +135,14 @@ def run_epoch(loader, train=False):
 def main():
     # Training Loop
     best_val_acc = 0
-    num_epochs = 30
+    num_epochs = 25
 
     for epoch in range(1, num_epochs + 1):
         tr_loss, tr_acc, tr_prec, tr_rec, tr_f1 = run_epoch(train_loader, train=True)
         val_loss, val_acc, val_prec, val_rec, val_f1 = run_epoch(val_loader, train=False)
         print(f"\nEpoch {epoch:02d}:")
-        print(f"  Train -> loss: {tr_loss:.4f}, acc: {tr_acc:.3f}, prec: {tr_prec:.3f}, rec: {tr_rec:.3f}, f1: {tr_f1:.3f}")
-        print(f"  Val   -> loss: {val_loss:.4f}, acc: {val_acc:.3f}, prec: {val_prec:.3f}, rec: {val_rec:.3f}, f1: {val_f1:.3f}")
+        print(f"  Train  loss: {tr_loss:.4f}, acc: {tr_acc:.3f}, prec: {tr_prec:.3f}, rec: {tr_rec:.3f}, f1: {tr_f1:.3f}")
+        print(f"  Val   loss: {val_loss:.4f}, acc: {val_acc:.3f}, prec: {val_prec:.3f}, rec: {val_rec:.3f}, f1: {val_f1:.3f}")
         
         if val_acc > best_val_acc:
             best_val_acc = val_acc
@@ -152,7 +152,6 @@ def main():
         if epoch % 10 == 0:
             metrics_file = os.path.join(os.getcwd(), "metrics_efficientnet_b0.txt")
             save_metrics_file(metrics_file, epoch, (tr_loss, tr_acc, tr_prec, tr_rec, tr_f1), (val_loss, val_acc, val_prec, val_rec, val_f1))
-            print(f"  Saved metrics to {metrics_file} (epoch {epoch})")
 
     # Eval
     model.load_state_dict(torch.load("best_efficientnet_b0.pth"))

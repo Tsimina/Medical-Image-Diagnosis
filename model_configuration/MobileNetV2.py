@@ -1,11 +1,11 @@
 import torch, torch.nn as nn, torch.optim as optim
+import numpy as np
+import os
 from torch.amp import GradScaler
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchvision.models import mobilenet_v2
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
-import numpy as np
-import os
 from datetime import datetime
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -71,7 +71,7 @@ in_features = model.classifier[1].in_features
 model.classifier[1] = nn.Linear(in_features, n_classes)
 model = model.to(device)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=1e-3)
+optimizer = optim.Adam(model.parameters(), lr=1e-4)
 scaler = GradScaler('cuda' if torch.cuda.is_available() else 'cpu', enabled=torch.cuda.is_available())
 
 # Metrics
@@ -166,7 +166,7 @@ def main():
 
         # Save metrics 
         if ep % 10 == 0:
-            metrics_file = os.path.join(os.getcwd(), "metrics_mobilenetv2.txt")
+            metrics_file = os.path.join(r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\results', "metrics_mobilenetv2.txt")
             save_metrics_file(metrics_file, ep, (tr_loss, tr_acc, tr_prec, tr_rec, tr_f1), (val_loss, val_acc, val_prec, val_rec, val_f1))
             print(f"  Saved metrics to {metrics_file}")
 
