@@ -12,7 +12,7 @@ folder_path = r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\test_set'
 models_dir = r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\test_application\saved_models'
 arch = "best_efficientnet_b0"   
 classes = ["NORMAL", "PNEUMONIA"] 
-csv_path = r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\utils\labels.csv'
+csv_path = r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\results\true_labels.csv'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Model path
@@ -107,17 +107,16 @@ for img_name in image_files:
         if true_label_name:
             correct = (true_label_name == pred_label)
 
-        results.append((img_name, true_raw, true_label_name, pred_idx, pred_label, f"{confidence:.4f}", correct))
+        results.append((img_name, true_label_name, pred_label, f"{confidence:.4f}", correct))
 
 # Write predictions vs true labels to CSV
 out_csv = os.path.join(os.getcwd(), "predictions_vs_true_efficientnet_b0.csv")
 with open(out_csv, 'w', newline='', encoding='utf-8') as of:
     w = csv.writer(of)
-    w.writerow(["filename", "true_label", "pred_label", "confidence", "correct"])
+    w.writerow(["filename", "true_label", "pred_label", "confidence", "result"])
     for r in results:
         w.writerow(r)
 
-print(f"Wrote {len(results)} prediction rows to {out_csv}")
 print("\n--- Summary ---")
 for c in classes:
     print(f"{c}: {counts[c]} images")
