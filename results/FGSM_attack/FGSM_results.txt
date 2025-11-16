@@ -9,3 +9,4 @@ Epsilon = 0.030 -> Loss: 3.3835, Acc: 0.287, Prec: 0.217, Rec: 0.229, F1: 0.223
 Epsilon = 0.050 -> Loss: 3.5427, Acc: 0.256, Prec: 0.203, Rec: 0.205, F1: 0.204
 Epsilon = 0.070 -> Loss: 3.4744, Acc: 0.256, Prec: 0.203, Rec: 0.205, F1: 0.204
 Epsilon = 0.100 -> Loss: 3.2574, Acc: 0.269, Prec: 0.209, Rec: 0.215, F1: 0.212
+Epsilon = 0.100 -> Loss: 3.2574, Acc: 0.269, Prec: 0.209, Rec: 0.215, F1: 0.212
