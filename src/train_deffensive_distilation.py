@@ -101,18 +101,12 @@ def main():
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             torch.save(student.state_dict(), DISTILLED_WEIGHTS)
-            print("  ✔ New best distilled model saved to:", DISTILLED_WEIGHTS)
 
-        # ---- log metrics to TXT ----
-        save_metrics_file(
-            metrics_file,
-            ep,
-            (tr_loss, tr_acc, tr_prec, tr_rec, tr_f1),
-            (val_loss, val_acc, val_prec, val_rec, val_f1)
-        )
+        if ep % 10 == 0:
+            metrics_file = os.path.join(r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\results', "metrics_distilled_mobilenetv2.txt")
+            save_metrics_file(metrics_file, ep, (tr_loss, tr_acc, tr_prec, tr_rec, tr_f1), (val_loss, val_acc, val_prec, val_rec, val_f1))
+            print(f"  Saved metrics to {metrics_file}")
 
-    print("\nFinished defensive distillation training.")
-    print("Best distilled model path:", DISTILLED_WEIGHTS)
     print("Metrics log:", metrics_file)
 
 
