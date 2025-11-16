@@ -4,7 +4,7 @@ import numpy as np
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchvision.models import mobilenet_v2
-from utils.FGSM import fgsm_attack, evaluate_fgsm, compute_metrics 
+from utils.FGSM_attack import fgsm_attack, evaluate_fgsm, compute_metrics 
 from multiprocessing import freeze_support
 
 # ======================= CONFIG ==========================
