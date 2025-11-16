@@ -1,12 +1,20 @@
 import torch, torch.nn as nn, torch.optim as optim
 import numpy as np
 import os
+from pathlib import Path
+import traceback
+from datetime import datetime
+from multiprocessing import freeze_support
 from torch.amp import GradScaler
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchvision.models import mobilenet_v2
-from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
-from datetime import datetime
+from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix, roc_curve, auc, roc_auc_score
+from sklearn.preprocessing import label_binarize
+import matplotlib
+# Use a non-interactive backend so saving figures works on machines without a display
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
@@ -41,7 +49,7 @@ test_ds  = datasets.ImageFolder(f"{data_dir}/test",  transform=eval_tf)
 
 train_loader = DataLoader(
     train_ds,
-    batch_size=32,
+    batch_size=16,
     shuffle=True,
     num_workers=0,  
     pin_memory=torch.cuda.is_available()
@@ -71,7 +79,7 @@ in_features = model.classifier[1].in_features
 model.classifier[1] = nn.Linear(in_features, n_classes)
 model = model.to(device)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=1e-4)
+optimizer = optim.Adam(model.parameters(), lr=1e-3)
 scaler = GradScaler('cuda' if torch.cuda.is_available() else 'cpu', enabled=torch.cuda.is_available())
 
 # Metrics
@@ -150,7 +158,7 @@ def train_one_epoch(loader):
 # Training 
 def main():
     best_val_acc, best_path = 0.0, "best_mobilenetv2.pth"
-    epochs = 30
+    epochs = 25
 
     for ep in range(1, epochs + 1):
         tr_loss, tr_acc, tr_prec, tr_rec, tr_f1 = train_one_epoch(train_loader)
@@ -174,12 +182,14 @@ def main():
     model.load_state_dict(torch.load(best_path, map_location=device))
     model.eval()
 
-    y_true, y_pred = [], []
+    y_true, y_pred, y_proba = [], [], []
     with torch.no_grad():
         for x, y in test_loader:
             x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
             out = model(x)
+            probs = torch.nn.functional.softmax(out, dim=1)
             y_pred.extend(out.argmax(1).cpu().numpy())
+            y_proba.extend(probs.cpu().numpy())  # shape: (batch_size, n_classes)
             y_true.extend(y.cpu().numpy())
 
     acc, prec, rec, f1 = compute_metrics(y_true, y_pred)
@@ -192,8 +202,108 @@ def main():
     print(f"F1-score : {f1:.3f}")
     print("Confusion Matrix:\n", cm)
 
+    # Compute ROC curve and AUC (for binary or multiclass)
+    y_true_arr = np.array(y_true)
+    y_proba_arr = np.array(y_proba)
+    print(f"y_proba_arr.shape: {y_proba_arr.shape}")
+    n_samples = y_true_arr.shape[0]
+    if n_samples == 0:
+        print("No test samples found; skipping ROC/AUC computation.")
+    else:
+        n_classes = y_proba_arr.shape[1] if y_proba_arr.ndim == 2 else 1
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        results_dir = os.path.join(r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\results')
+        os.makedirs(results_dir, exist_ok=True)
+        try:
+            if n_classes <= 1:
+                print("Insufficient class probability output for ROC (n_classes<=1). Skipping.")
+            elif n_classes == 2:
+                # Binary classification: use probability for class 1
+                y_proba_pos = y_proba_arr[:, 1]
+                # Ensure there are both classes present in y_true
+                unique_classes = np.unique(y_true_arr)
+                if unique_classes.size < 2:
+                    print(f"Only one class present in test labels ({unique_classes}); cannot compute ROC.")
+                else:
+                    fpr, tpr, _ = roc_curve(y_true_arr, y_proba_pos)
+                    roc_auc = auc(fpr, tpr)
+                    print(f"ROC AUC Score: {roc_auc:.4f}")
+
+                    plt.figure(figsize=(8, 6))
+                    plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (AUC = {roc_auc:.4f})')
+                    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--', label='Random Classifier')
+                    plt.xlim([0.0, 1.0])
+                    plt.ylim([0.0, 1.05])
+                    plt.xlabel('False Positive Rate')
+                    plt.ylabel('True Positive Rate')
+                    plt.title('ROC Curve - MobileNetV2')
+                    plt.legend(loc="lower right")
+                    plt.grid(alpha=0.3)
+
+                    roc_plot_path = os.path.join(results_dir, f'roc_curve_mobilenetv2_{timestamp}.png')
+                    plt.savefig(roc_plot_path, dpi=150, bbox_inches='tight')
+                    print(f"ROC curve saved to {roc_plot_path}")
+                    plt.close()
+            else:
+                # Multiclass: compute one-vs-rest ROC for each class
+                classes_idx = list(range(n_classes))
+                y_true_bin = label_binarize(y_true_arr, classes=classes_idx)
+                if y_true_bin.shape[1] != n_classes:
+                    # label_binarize might produce fewer columns if some labels are missing
+                    print("Warning: some classes missing in y_true; ROC will be computed for present classes only.")
+
+                # Compute ROC for each class
+                fpr = dict()
+                tpr = dict()
+                roc_auc = dict()
+
+                plt.figure(figsize=(9, 7))
+                colors = plt.cm.get_cmap('tab10')
+                for i in range(n_classes):
+                    try:
+                        fpr[i], tpr[i], _ = roc_curve(y_true_bin[:, i], y_proba_arr[:, i])
+                        roc_auc[i] = auc(fpr[i], tpr[i])
+                        plt.plot(fpr[i], tpr[i], lw=2, color=colors(i % 10),
+                                 label=f'Class {i} (AUC = {roc_auc[i]:.4f})')
+                    except ValueError:
+                        # Occurs if a class is absent in y_true_bin[:, i]
+                        print(f"Skipping ROC for class {i} (no positive samples in y_true)")
+
+                # micro-average ROC
+                try:
+                    fpr['micro'], tpr['micro'], _ = roc_curve(y_true_bin.ravel(), y_proba_arr.ravel())
+                    roc_auc['micro'] = auc(fpr['micro'], tpr['micro'])
+                    plt.plot(fpr['micro'], tpr['micro'], label=f"micro-average (AUC = {roc_auc['micro']:.4f})",
+                             color='deeppink', linestyle=':', linewidth=3)
+                except Exception:
+                    pass
+
+                plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+                plt.xlim([0.0, 1.0])
+                plt.ylim([0.0, 1.05])
+                plt.xlabel('False Positive Rate')
+                plt.ylabel('True Positive Rate')
+                plt.title('ROC Curve - MobileNetV2 (multiclass)')
+                plt.legend(loc="lower right", fontsize='small')
+                plt.grid(alpha=0.3)
+
+                roc_plot_path = os.path.join(results_dir, f'roc_curve_mobilenetv2_multiclass_{timestamp}.png')
+                plt.savefig(roc_plot_path, dpi=150, bbox_inches='tight')
+                print(f"Multiclass ROC curve saved to {roc_plot_path}")
+                plt.close()
+        except Exception as e:
+            print(f"Unexpected error when computing/saving ROC: {e}")
+            traceback.print_exc()
+        finally:
+            # Diagnostic listing
+            try:
+                print("Results directory listing:")
+                for fn in sorted(os.listdir(results_dir)):
+                    print("  ", fn)
+            except Exception:
+                pass
+
 
 if __name__ == '__main__':
-    from multiprocessing import freeze_support
     freeze_support()
     main()

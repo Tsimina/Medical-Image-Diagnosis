@@ -10,7 +10,7 @@ import os
 # Config
 folder_path = r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\test_set' 
 models_dir = r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\test_application\saved_models'
-arch = "best_efficientnet_b0"   
+arch = "best_mobilenetv2"  
 classes = ["NORMAL", "PNEUMONIA"] 
 csv_path = r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\results\true_labels.csv'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -30,14 +30,9 @@ transform = transforms.Compose([
 ])
 
 # Model 
-if arch == "best_mobilenetv2":
-    model = mobilenet_v2(weights=None)
-    in_features = model.classifier[1].in_features
-    model.classifier[1] = nn.Linear(in_features, len(classes))
-else:
-    model = efficientnet_b0(weights=None)
-    in_features = model.classifier[1].in_features
-    model.classifier[1] = nn.Linear(in_features, len(classes))
+model = mobilenet_v2(weights=None)
+in_features = model.classifier[1].in_features
+model.classifier[1] = nn.Linear(in_features, len(classes))
 
 # load model
 try:
@@ -110,7 +105,7 @@ for img_name in image_files:
         results.append((img_name, true_label_name, pred_label, f"{confidence:.4f}", correct))
 
 # Write predictions vs true labels to CSV
-out_csv = os.path.join(os.getcwd(), "predictions_vs_true_efficientnet_b0.csv")
+out_csv = os.path.join(os.getcwd(), "predictions_vs_true_mobilenetv2.csv")
 with open(out_csv, 'w', newline='', encoding='utf-8') as of:
     w = csv.writer(of)
     w.writerow(["filename", "true_label", "pred_label", "confidence", "result"])
