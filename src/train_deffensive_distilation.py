@@ -6,7 +6,6 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
 import numpy as np
-
 from model_configuration.deffensive_distilation_config import *
 from model_configuration.Mobilenetv2_model import create_mobilenet_v2
 from utils.deffensive_distilation_metrics import *
@@ -100,13 +99,13 @@ def main():
         print(f"  Val   loss: {val_loss:.4f}, acc: {val_acc:.3f}, "
               f"prec: {val_prec:.3f}, rec: {val_rec:.3f}, f1: {val_f1:.3f}")
 
-        # -Save best model
+        # Save best model
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             torch.save(student.state_dict(), DISTILLED_WEIGHTS)
 
         if ep % 5 == 0:
-            metrics_file = os.path.join(r'C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\results', "metrics_distilled_mobilenetv2.txt")
+            metrics_file = os.path.join(r'path_to_saved_models', "metrics_distilled_mobilenetv2.txt")
             save_metrics_file(metrics_file, ep, (tr_loss, tr_acc, tr_prec, tr_rec, tr_f1), (val_loss, val_acc, val_prec, val_rec, val_f1))
             print(f"  Saved metrics to {metrics_file}")
 

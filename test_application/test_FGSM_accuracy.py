@@ -4,20 +4,24 @@ import numpy as np
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchvision.models import mobilenet_v2
-from utils.FGSM_attack import fgsm_attack, evaluate_fgsm, compute_metrics 
+from attacks.FGSM_attack import fgsm_attack, evaluate_fgsm, compute_metrics 
 from multiprocessing import freeze_support
+import os
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 # Config
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
 
-data_dir = r'path_to_your_chest_xray_dataset'
-weights_path = r'path_to_your_distilled_model_weights.pth' 
+data_dir = r'path_to_your_data_directory'
+weights_path = r'path_to_your_model_weights.pth'
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
 
-# limitele echivalente [0,1] în spațiul normalizat
+# Limits for clamping adversarial examples
 IMAGENET_MIN = [(0.0 - m) / s for m, s in zip(IMAGENET_MEAN, IMAGENET_STD)]
 IMAGENET_MAX = [(1.0 - m) / s for m, s in zip(IMAGENET_MEAN, IMAGENET_STD)]
 
@@ -83,7 +87,7 @@ def evaluate_clean(model, loader, criterion):
     return avg_loss, acc, prec, rec, f1
 
 
-# main
+# Main
 def main():
     # Data
     test_loader, n_classes = get_test_loader(batch_size=32)
@@ -113,6 +117,8 @@ def main():
     epsilons = [0.005, 0.01, 0.03, 0.05, 0.08, 0.1]
 
     print("\n=== FGSM Attack Evaluation (test set) ===")
+    accuracies = []
+    results_rows = []
     for eps in epsilons:
         adv_loss, adv_acc, adv_prec, adv_rec, adv_f1 = evaluate_fgsm(
             model=model,
@@ -131,6 +137,23 @@ def main():
               f"Rec: {adv_rec:.3f}, "
               f"F1: {adv_f1:.3f}")
 
+        accuracies.append(adv_acc)
+        results_rows.append((eps, adv_loss, adv_acc, adv_prec, adv_rec, adv_f1))
+
+    # After loop: save CSV and plot
+    results_dir = r'path_to_your_results_directory'
+    os.makedirs(results_dir, exist_ok=True)
+
+    # Plot
+    plt.figure(figsize=(8, 5))
+    plt.plot(epsilons, accuracies, marker='o', linestyle='-', color='tab:blue')
+    plt.xlabel('Epsilon')
+    plt.ylabel('Accuracy')
+    plt.title('FGSM: Accuracy vs Epsilon distilled model')
+    plt.grid(alpha=0.3)
+    plot_path = os.path.join(results_dir, f'fgsm_accuracy_vs_epsilon.png')
+    plt.savefig(plot_path, dpi=150, bbox_inches='tight')
+    plt.close()
 
 if __name__ == "__main__":
     freeze_support()
