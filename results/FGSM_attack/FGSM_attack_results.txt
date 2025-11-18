@@ -1,0 +1,35 @@
+FGSM attack on baseline model 
+=== Clean Test Evaluation ===
+Loss: 0.6718, Acc: 0.827, Prec: 0.863, Rec: 0.778, F1: 0.796
+
+=== FGSM Attack Evaluation (test set) ===
+Epsilon = 0.005 -> Loss: 1.8515, Acc: 0.583, Prec: 0.501, Rec: 0.501, F1: 0.474
+Epsilon = 0.010 -> Loss: 2.4738, Acc: 0.447, Prec: 0.329, Rec: 0.371, F1: 0.344
+Epsilon = 0.030 -> Loss: 3.3835, Acc: 0.287, Prec: 0.217, Rec: 0.229, F1: 0.223
+Epsilon = 0.050 -> Loss: 3.5427, Acc: 0.256, Prec: 0.203, Rec: 0.205, F1: 0.204
+Epsilon = 0.080 -> Loss: 3.4744, Acc: 0.256, Prec: 0.203, Rec: 0.205, F1: 0.204
+Epsilon = 0.100 -> Loss: 3.2574, Acc: 0.269, Prec: 0.209, Rec: 0.215, F1: 0.212
+
+FGSM attack on distilled model - T = 35, Alpha = 0.9
+=== Clean Test Evaluation ===
+Loss: 0.6579, Acc: 0.822, Prec: 0.862, Rec: 0.771, F1: 0.788
+
+=== FGSM Attack Evaluation (test set) ===
+Epsilon = 0.005 -> Loss: 0.9878, Acc: 0.740, Prec: 0.763, Rec: 0.674, F1: 0.681
+Epsilon = 0.010 -> Loss: 1.3104, Acc: 0.657, Prec: 0.630, Rec: 0.584, F1: 0.575
+Epsilon = 0.030 -> Loss: 2.2332, Acc: 0.508, Prec: 0.382, Rec: 0.424, F1: 0.389
+Epsilon = 0.050 -> Loss: 2.6995, Acc: 0.412, Prec: 0.276, Rec: 0.333, F1: 0.300
+Epsilon = 0.080 -> Loss: 2.9256, Acc: 0.388, Prec: 0.261, Rec: 0.312, F1: 0.284
+Epsilon = 0.100 -> Loss: 3.0227, Acc: 0.362, Prec: 0.250, Rec: 0.294, F1: 0.270
+
+FGSM attack on distilled model - T = 50, Alpha = 0.9
+=== Clean Test Evaluation ===
+Loss: 0.7108, Acc: 0.821, Prec: 0.867, Rec: 0.767, F1: 0.785
+
+=== FGSM Attack Evaluation (test set) ===
+Epsilon = 0.005 -> Loss: 1.0251, Acc: 0.748, Prec: 0.775, Rec: 0.683, F1: 0.691
+Epsilon = 0.010 -> Loss: 1.3303, Acc: 0.668, Prec: 0.654, Rec: 0.589, F1: 0.578
+Epsilon = 0.030 -> Loss: 2.1744, Acc: 0.522, Prec: 0.380, Rec: 0.432, F1: 0.389
+Epsilon = 0.050 -> Loss: 2.5727, Acc: 0.421, Prec: 0.280, Rec: 0.341, F1: 0.305
+Epsilon = 0.080 -> Loss: 2.7244, Acc: 0.391, Prec: 0.259, Rec: 0.314, F1: 0.283
+Epsilon = 0.100 -> Loss: 2.7500, Acc: 0.367, Prec: 0.246, Rec: 0.290, F1: 0.266

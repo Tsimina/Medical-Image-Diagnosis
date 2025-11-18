@@ -3,7 +3,7 @@ import numpy as np
 from typing import Any, Tuple
 from sklearn.metrics import precision_score, recall_score, f1_score
 
-
+# Compute metrics function
 def compute_metrics(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
     acc  = (y_true == y_pred).mean()
@@ -12,7 +12,7 @@ def compute_metrics(y_true, y_pred):
     f1   = f1_score(y_true, y_pred, average='macro', zero_division=0)
     return acc, prec, rec, f1
 
-
+# FGSM attack function
 def fgsm_attack(
     model: Any,
     x: torch.Tensor,
@@ -23,39 +23,34 @@ def fgsm_attack(
     x_min_tensor: torch.Tensor = None,
     x_max_tensor: torch.Tensor = None,
 ) -> torch.Tensor:
-    """
-    x: batch de imagini DEJA normalizate (cum ies din DataLoader)
-    y: etichetele corecte
-    epsilon: mărimea perturbării în spațiul normalizat
-    """
+    
     model.eval()
-    # determine device if not provided
     if device is None:
         try:
             device = next(model.parameters()).device
         except StopIteration:
             device = torch.device('cpu')
 
-    # facem o copie a inputului și o marcăm cu requires_grad
+    # Copy input and set requires_grad
     x_adv = x.clone().detach().to(device)
     x_adv.requires_grad = True
     y = y.to(device)
 
-    # forward + loss
+    # Forward + loss
     out = model(x_adv)
     loss = criterion(out, y)
 
-    # backward față de intrare
+    # Backward w.r.t. input
     model.zero_grad()
     loss.backward()
 
-    # semnul gradientului
+    # Sign of the gradient
     grad_sign = x_adv.grad.data.sign()
 
-    # aplicăm perturbarea FGSM
+    # FGSM perturbation
     x_adv = x_adv + epsilon * grad_sign
 
-    # clamp în limitele normalizate (echivalent cu [0,1] înainte de Normalize)
+    # Clamp to normalized limits
     if x_min_tensor is not None and x_max_tensor is not None:
         x_min_tensor = x_min_tensor.to(device)
         x_max_tensor = x_max_tensor.to(device)
@@ -63,7 +58,7 @@ def fgsm_attack(
 
     return x_adv.detach()
 
-
+# Evaluate FGSM function
 def evaluate_fgsm(
     model: Any,
     loader,
@@ -73,13 +68,7 @@ def evaluate_fgsm(
     x_min_tensor: torch.Tensor = None,
     x_max_tensor: torch.Tensor = None,
 ):
-    """
-    Evaluează modelul pe exemple FGSM generate din setul dat de loader.
-    Returnează: loss, acc, prec, rec, f1
-    """
     model.eval()
-
-    # determine device if not provided
     if device is None:
         try:
             device = next(model.parameters()).device
@@ -92,7 +81,7 @@ def evaluate_fgsm(
         x = x.to(device, non_blocking=True)
         y = y.to(device, non_blocking=True)
 
-        # generăm exemple adversariale pentru acest batch
+        # Generate adversarial examples
         x_adv = fgsm_attack(
             model=model,
             x=x,
@@ -104,7 +93,7 @@ def evaluate_fgsm(
             x_max_tensor=x_max_tensor,
         )
 
-        # forward pe imaginile adversariale (fără gradient, doar pentru evaluare)
+        # Forward on adversarial images
         with torch.no_grad():
             out_adv = model(x_adv)
             loss = criterion(out_adv, y)

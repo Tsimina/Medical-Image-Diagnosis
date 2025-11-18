@@ -1,4 +1,3 @@
-# utils.py
 import os
 import numpy as np
 import torch
@@ -7,17 +6,10 @@ import torch.nn.functional as F
 from torch.amp import GradScaler
 from sklearn.metrics import precision_score, recall_score, f1_score
 
-from model_configuration.deffensive_distilation_config import (
-    DEVICE, T, ALPHA
-)
+from model_configuration.deffensive_distilation_config import *
 
-# ---------------------------------------------------------
-# METRICS
-# ---------------------------------------------------------
+# Metrics computation
 def compute_metrics(y_true, y_pred):
-    """
-    Calculează Accuracy, Precision, Recall, F1 (macro).
-    """
     y_true = np.array(y_true)
     y_pred = np.array(y_pred)
 
@@ -28,12 +20,8 @@ def compute_metrics(y_true, y_pred):
 
     return acc, prec, rec, f1
 
-
+# Save metrics to file
 def save_metrics_file(path, epoch, train_metrics, val_metrics):
-    """
-    Salvează metricile pentru un epoch (Train + Val) într-un fișier .txt.
-    Format similar cu scriptul tău original.
-    """
     exists = os.path.exists(path)
 
     with open(path, "a", encoding="utf-8") as f:
@@ -61,16 +49,9 @@ def save_metrics_file(path, epoch, train_metrics, val_metrics):
 
         f.write("\n" + "=" * 80 + "\n\n")
 
-
-# ---------------------------------------------------------
-# CLEAN EVAL
-# ---------------------------------------------------------
+# Clean evaluation function
 @torch.no_grad()
 def evaluate_clean(model, loader, criterion, device=DEVICE):
-    """
-    Evaluează un model pe loader (fără atac), returnează:
-    loss, acc, prec, rec, f1
-    """
     model.eval()
     total_loss = 0.0
     y_true, y_pred = [], []
@@ -92,20 +73,13 @@ def evaluate_clean(model, loader, criterion, device=DEVICE):
     return avg_loss, acc, prec, rec, f1
 
 
-# ---------------------------------------------------------
-# DEFENSIVE DISTILLATION – UN SINGUR EPOCH
-# ---------------------------------------------------------
+# GradScaler for mixed precision
 scaler = GradScaler('cuda' if torch.cuda.is_available() else 'cpu', enabled=torch.cuda.is_available())
 _ce_loss = nn.CrossEntropyLoss()
 _kl_div  = nn.KLDivLoss(reduction="batchmean")
 
-
+# Training function for defensive distillation
 def train_one_epoch_distill(teacher, student, loader, optimizer, device=DEVICE):
-    """
-    Un epoch de defensive distillation.
-    teacher: model înghețat (eval, fără grad)
-    student: model antrenat
-    """
     teacher.eval()
     student.train()
 
@@ -116,7 +90,7 @@ def train_one_epoch_distill(teacher, student, loader, optimizer, device=DEVICE):
         x = x.to(device)
         y = y.to(device)
 
-        # Teacher logits (fără gradient)
+        # Teacher logits 
         with torch.no_grad():
             teacher_logits = teacher(x)
 
@@ -128,17 +102,17 @@ def train_one_epoch_distill(teacher, student, loader, optimizer, device=DEVICE):
         ):
             student_logits = student(x)
 
-            # soft labels de la teacher + student
+            # Soft targets
             teacher_soft    = torch.softmax(teacher_logits / T, dim=1)
             student_log_soft = torch.log_softmax(student_logits / T, dim=1)
 
-            # pierdere de distillation (KL)
+            # Soft loss (KL Divergence)
             loss_soft = _kl_div(student_log_soft, teacher_soft) * (T * T)
 
-            # pierdere clasică față de label-uri
+            # Hard loss (Cross-Entropy)
             loss_hard = _ce_loss(student_logits, y)
 
-            # combinația finală
+            # Combined loss
             loss = ALPHA * loss_soft + (1.0 - ALPHA) * loss_hard
 
         scaler.scale(loss).backward()

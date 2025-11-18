@@ -7,12 +7,12 @@ from torchvision.models import mobilenet_v2
 from utils.FGSM_attack import fgsm_attack, evaluate_fgsm, compute_metrics 
 from multiprocessing import freeze_support
 
-# ======================= CONFIG ==========================
+# Config
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
 
-data_dir = r"C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\chest_xray"
-weights_path = r"C:\Users\simin\OneDrive\Desktop\Master_an_2\IA3\lab\Medical-Image-Diagnosis\test_application\saved_models\best_mobilenetv2.pth"
+data_dir = r'path_to_your_chest_xray_dataset'
+weights_path = r'path_to_your_distilled_model_weights.pth' 
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
@@ -22,7 +22,7 @@ IMAGENET_MIN = [(0.0 - m) / s for m, s in zip(IMAGENET_MEAN, IMAGENET_STD)]
 IMAGENET_MAX = [(1.0 - m) / s for m, s in zip(IMAGENET_MEAN, IMAGENET_STD)]
 
 
-# ======================= DATA ============================
+# Data Loader
 def get_test_loader(batch_size=32):
     eval_tf = transforms.Compose([
         transforms.Grayscale(num_output_channels=3),
@@ -45,9 +45,8 @@ def get_test_loader(batch_size=32):
     return test_loader, len(test_ds.classes)
 
 
-# ======================= MODEL ===========================
+# Model Loading
 def load_mobilenetv2(weights_path, num_classes):
-    # 1. Creezi modelul cu arhitectura corectă
     model = mobilenet_v2(weights=None)
     in_features = model.classifier[1].in_features
     model.classifier[1] = nn.Linear(in_features, num_classes)
@@ -62,7 +61,7 @@ def load_mobilenetv2(weights_path, num_classes):
     return model
 
 
-# ======================= CLEAN EVAL ======================
+# Evaluation on clean data
 @torch.no_grad()
 def evaluate_clean(model, loader, criterion):
     model.eval()
@@ -84,20 +83,20 @@ def evaluate_clean(model, loader, criterion):
     return avg_loss, acc, prec, rec, f1
 
 
-# ======================= MAIN ============================
+# main
 def main():
-    # 1) data
+    # Data
     test_loader, n_classes = get_test_loader(batch_size=32)
 
-    # 2) model
+    # Model
     model = load_mobilenetv2(weights_path, num_classes=n_classes)
     criterion = nn.CrossEntropyLoss()
 
-    # 3) tensori pentru clamp în spațiul normalizat
+    # Tensors
     x_min_tensor = torch.tensor(IMAGENET_MIN, device=device).view(1, 3, 1, 1)
     x_max_tensor = torch.tensor(IMAGENET_MAX, device=device).view(1, 3, 1, 1)
 
-    # 4) evaluare pe imagini curate
+    # Evaluate on clean data
     clean_loss, clean_acc, clean_prec, clean_rec, clean_f1 = evaluate_clean(
         model=model,
         loader=test_loader,
@@ -110,8 +109,8 @@ def main():
           f"Rec: {clean_rec:.3f}, "
           f"F1: {clean_f1:.3f}")
 
-    # 5) evaluare FGSM pentru mai multe epsilons
-    epsilons = [0.005, 0.01, 0.02, 0.03, 0.05, 0.07, 0.1]
+    # Evaluate under FGSM attack
+    epsilons = [0.005, 0.01, 0.03, 0.05, 0.08, 0.1]
 
     print("\n=== FGSM Attack Evaluation (test set) ===")
     for eps in epsilons:
