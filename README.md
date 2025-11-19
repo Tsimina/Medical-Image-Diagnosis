@@ -52,11 +52,12 @@ Our MobileNetV2 was traint on the Kaggle *Chest X-Ray Images (Pneumonia)*. You c
 
 <img width="716" height="220" alt="xray" src="https://github.com/user-attachments/assets/eabb0b86-54f4-43f5-b3ed-b7546b762e9b" />
 
+
 The dataset contains 5865 JPEG images of chest x-rays, being split by default into 3 folders train/test/val. The distribution for each data split can be seen in the graph attached below.
 
 <img width="520" height="334" alt="Graph" src="https://github.com/user-attachments/assets/1e9d339f-2d68-436f-b33d-dab1e9f0fedf" />
 
- > Figure: Data split distribution - dark pink for the pneumonia chest x-rays and the lighter pink for the normal chest x-rays)
+ > Figure: Data split distribution - dark pink for the pneumonia chest x-rays and the lighter pink for the normal chest x-rays.
 
 ## Attacks
 
@@ -91,6 +92,7 @@ This repository contains 3 models:
 For the baseline configuration we utilised a clasic MobilenetV2 architecture.
   
 <img width="850" height="297" alt="mobilenet_architecture" src="https://github.com/user-attachments/assets/e2b5f4b6-0623-4617-b65b-1a18de22bc6e" />
+  > Figure: Dataset sample.
 
 Preprocessing (train):
   - Grayscale: 3 channels, resize to 224$\times$224
@@ -170,6 +172,7 @@ The baseline model registerd very good results results on clean data:
 |  0.6579  |    82.2%     |     86.2%     |   77.1%    |    78.8%     |
 
 <img width="520" height="402" alt="roc_curve_mobilenetv2" src="https://github.com/user-attachments/assets/6d3a2f20-acc9-4283-9766-67c3521a4fb0" />
+ > Figure: ROC Curve for MobileNetV2 (AUC = 0.93).
 
 ### MobileNetV2 with Lipschitz Regularization – Test Performance
 
