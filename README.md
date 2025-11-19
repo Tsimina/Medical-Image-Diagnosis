@@ -43,7 +43,7 @@ Medical-Image-Diagnosis/
 │
 ├── requirments.txt          # Python dependencies (pip install -r)
 ├── LICENSE                  # MIT License
-└── (this) README.md
+└── README.md
 ```
 
 ## Dataset 
