@@ -11,15 +11,15 @@ import os
 import random
 
 
-MODEL_PATH = r"E:\master an 2\ia3\proiect\Medical-Image-Diagnosis\test_application\saved_models\best_mobilenetv2.pth"    
+MODEL_PATH = r'path_to_your_model_weights.pth'    
 
 # ORIGINAL IMAGES ROOT (Normal / Tuberculosis folders)
-IMAGE_ROOT = r"E:/master an 2/ia3/proiect/Medical-Image-Diagnosis/test/"  
+IMAGE_ROOT = r'path_to_your_data_directory/test/' 
 
 # NEW: SAVE ATTACKED IMAGES HERE
-ATTACKED_ROOT = r"E:\master an 2\ia3\proiect\Medical-Image-Diagnosis\attacked_output"
+ATTACKED_ROOT = r'path_to_your_attacked_output_directory'
 
-CSV_PATH = r"E:\master an 2\ia3\proiect\correctly_classified_images_binary.csv"    
+CSV_PATH = r'path_to_your_csv_file.csv'  
 ATTACK_PROPORTION = 0.30                
 IMG_SIZE = 224
 
@@ -160,4 +160,4 @@ for idx, row in selected_rows.iterrows():
     # SAVE INTO ATTACKED FOLDER (NOT overwrite original)
     adv_img.save(save_path)
 
-print("\n✓ DONE! Attacked images saved into:", ATTACKED_ROOT)
+print("\n Saved into:", ATTACKED_ROOT)
