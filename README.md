@@ -50,13 +50,13 @@ Medical-Image-Diagnosis/
 
 Our MobileNetV2 was traint on the Kaggle *Chest X-Ray Images (Pneumonia)*. You can download the dataset here: [Chest X-Ray Images (Pneumonia)](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia). 
 
- ![dataset_sapmle]<img width="716" height="220" alt="xray" src="https://github.com/user-attachments/assets/eabb0b86-54f4-43f5-b3ed-b7546b762e9b" />
+<img width="716" height="220" alt="xray" src="https://github.com/user-attachments/assets/eabb0b86-54f4-43f5-b3ed-b7546b762e9b" />
 
 The dataset contains 5865 JPEG images of chest x-rays, being split by default into 3 folders train/test/val. The distribution for each data split can be seen in the graph attached below.
 
-![dataset_distribution]<img width="981" height="630" alt="Graph" src="https://github.com/user-attachments/assets/1e9d339f-2d68-436f-b33d-dab1e9f0fedf" />
+<img width="520" height="334" alt="Graph" src="https://github.com/user-attachments/assets/1e9d339f-2d68-436f-b33d-dab1e9f0fedf" />
 
- > Figure:Data split distribution - dark pink for the pneumonia chest x-rays and the lighter pink for the normal chest x-rays)
+ > Figure: Data split distribution - dark pink for the pneumonia chest x-rays and the lighter pink for the normal chest x-rays)
 
 ## Model Details
 
@@ -147,7 +147,7 @@ The baseline model registerd very good results results on clean data:
 |---------:|-------------:|--------------:|-----------:|-------------:|
 | 0.6579   | 82.2%        | 86.2%         | 77.1%      | 78.8%        |
 
-![ROC_curve]<img width="1009" height="780" alt="roc_curve_mobilenetv2" src="https://github.com/user-attachments/assets/6d3a2f20-acc9-4283-9766-67c3521a4fb0" />
+<img width="520" height="402" alt="roc_curve_mobilenetv2" src="https://github.com/user-attachments/assets/6d3a2f20-acc9-4283-9766-67c3521a4fb0" />
 
 ### MobileNetV2 with Lipschitz Regularization – Test Performance
 
@@ -165,6 +165,6 @@ Improvements are largest at moderate noise (ϵ = 0.03), reaching over +23 pp. Hi
 | 0.08   | 25.6%             | 38.8%          | +13.2 pp      | 39.1%          | +13.5 pp      |
 
 Both distilled models show slower accuracy degradation across all perturbation levels.
-![epsilon_comp]<img width="1445" height="362" alt="comparatie " src="https://github.com/user-attachments/assets/2919d9b8-13ab-4018-8676-f39e2b591f6a" />
+<img width="1445" height="362" alt="comparatie " src="https://github.com/user-attachments/assets/2919d9b8-13ab-4018-8676-f39e2b591f6a" />
   > Figure: Perfromance comaprison to different perturbation values.
 
