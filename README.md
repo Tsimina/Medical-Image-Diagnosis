@@ -67,7 +67,9 @@ A black-box attack that finds a misclassification by changing only one pixel in 
 image.
 Does not require model gradients; instead it evaluates only the model’s outputs.
 Uses an evolutionary algorithm (e.g., differential evolution) to search for:
+
       $x′ = x + δ(i,j)$
+      
 where δ(i,j) modifies a single pixel at position (i, j).
 
 ### FGSM 
@@ -76,7 +78,9 @@ A white-box attack that uses the model’s gradients to find the direction that 
 the loss the most.
 Creates an adversarial example by adding a small, targeted perturbation to the input
 image:
+
      $x′ = x + ϵ · sign(∇x J(x, y ))$
+     
 The parameter ϵ controls the strength of the perturbation.
 Called “sign” because it uses only the sign of the gradient (+1 or −1) to decide the
 direction of each pixel change.
@@ -177,7 +181,7 @@ The baseline model registerd very good results results on clean data:
 
 | **Loss** | **Accuracy** | **Precision** | **Recall** | **F1-score** |
 |---------:|-------------:|--------------:|-----------:|-------------:|
-|  0.6579  |    82.2%     |     86.2%     |   77.1%    |    78.8%     |
+|  0.6579  |     82.2%    |     86.2%     |    77.1%   |     78.8%    |
 
 <img width="520" height="402" alt="roc_curve_mobilenetv2" src="https://github.com/user-attachments/assets/6d3a2f20-acc9-4283-9766-67c3521a4fb0" />
 
@@ -185,8 +189,15 @@ The baseline model registerd very good results results on clean data:
 
 **MobileNetV2 with Lipschitz Regularization – Test Performance**
 
+First we computed the metrics for baseline model that was attacked using the One-Pixel method.
+
+|          **Model**         | **Accuracy** | **Precision** | **Recall** | **F1-score** |
+|---------------------------:|-------------:|--------------:|-----------:|-------------:|
+|  Baseline model            |     84.53%   |     85.3%     |    84.5%   |     84.03%   |
+|  Baseline model - attacked |     84.03%   |     84.8%     |    84.42%  |     83.92%   |
 
 **MobileNetV2 Deffensive Distilation model**
+
 
 Improvements are largest at moderate noise (ϵ = 0.03), reaching over +23 pp. Higher temperature (T = 50) provides a small but consistent advantage over T = 35.
 
