@@ -58,6 +58,28 @@ The dataset contains 5865 JPEG images of chest x-rays, being split by default in
 
  > Figure: Data split distribution - dark pink for the pneumonia chest x-rays and the lighter pink for the normal chest x-rays)
 
+## Attacks
+
+### One-Pixel attack
+
+A black-box attack that finds a misclassification by changing only one pixel in the
+image.
+Does not require model gradients; instead it evaluates only the model’s outputs.
+Uses an evolutionary algorithm (e.g., differential evolution) to search for:
+      $\x′ = x + δ(i,j)$
+where δ(i,j) modifies a single pixel at position (i, j).
+
+### FGSM 
+
+A white-box attack that uses the model’s gradients to find the direction that increases
+the loss the most.
+Creates an adversarial example by adding a small, targeted perturbation to the input
+image:
+     $\x′ = x + ϵ · sign(∇x J(x, y ))$
+The parameter ϵ controls the strength of the perturbation.
+Called “sign” because it uses only the sign of the gradient (+1 or −1) to decide the
+direction of each pixel change.
+
 ## Model Details
 
 This repository contains 3 models:
@@ -68,7 +90,7 @@ This repository contains 3 models:
 ### Baseline MobileNetV2 configuration
 For the baseline configuration we utilised a clasic MobilenetV2 architecture.
   
-  <img width="850" height="297" alt="mobilenet_architecture" src="https://github.com/user-attachments/assets/e2b5f4b6-0623-4617-b65b-1a18de22bc6e" />
+<img width="850" height="297" alt="mobilenet_architecture" src="https://github.com/user-attachments/assets/e2b5f4b6-0623-4617-b65b-1a18de22bc6e" />
 
 Preprocessing (train):
   - Grayscale: 3 channels, resize to 224$\times$224
@@ -145,7 +167,7 @@ The baseline model registerd very good results results on clean data:
 
 | **Loss** | **Accuracy** | **Precision** | **Recall** | **F1-score** |
 |---------:|-------------:|--------------:|-----------:|-------------:|
-| 0.6579   | 82.2%        | 86.2%         | 77.1%      | 78.8%        |
+|  0.6579  |    82.2%     |     86.2%     |   77.1%    |    78.8%     |
 
 <img width="520" height="402" alt="roc_curve_mobilenetv2" src="https://github.com/user-attachments/assets/6d3a2f20-acc9-4283-9766-67c3521a4fb0" />
 
@@ -158,13 +180,17 @@ Improvements are largest at moderate noise (ϵ = 0.03), reaching over +23 pp. Hi
 
 ### Accuracy Improvements of Defensive Distillation vs. Baseline (FGSM Attack)
 
-| **ε**   | **Baseline Acc** | **T = 35 Acc** | **Imp.**     | **T = 50 Acc** | **Imp.**     |
+| **ε**  | **Baseline Acc**  | **T = 35 Acc** |   **Imp.**    | **T = 50 Acc** |   **Imp.**    |
 |--------|------------------:|---------------:|--------------:|---------------:|--------------:|
-| 0.03   | 28.7%             | 50.8%          | +22.1 pp      | 52.2%          | +23.5 pp      |
-| 0.05   | 25.6%             | 41.2%          | +15.6 pp      | 42.1%          | +16.5 pp      |
-| 0.08   | 25.6%             | 38.8%          | +13.2 pp      | 39.1%          | +13.5 pp      |
+|  0.03  |      28.7%        |     50.8%      |   +22.1 pp    |     52.2%      |   +23.5 pp    |
+|  0.05  |      25.6%        |     41.2%      |   +15.6 pp    |     42.1%      |   +16.5 pp    |
+|  0.08  |      25.6%        |     38.8%      |   +13.2 pp    |     39.1%      |   +13.5 pp    |
 
 Both distilled models show slower accuracy degradation across all perturbation levels.
+
 <img width="1445" height="362" alt="comparatie " src="https://github.com/user-attachments/assets/2919d9b8-13ab-4018-8676-f39e2b591f6a" />
   > Figure: Perfromance comaprison to different perturbation values.
+
+## Acknoledgments 
+Contribuitors: Manolache Arianna, 
 
