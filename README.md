@@ -191,9 +191,9 @@ The baseline model registerd very good results results on clean data:
 
 First we computed the metrics for baseline model that was attacked using the One-Pixel method.
 
-|          **Model**         | **Accuracy** | **Precision** | **Recall** | **F1-score** |
+|       **Model**            | **Accuracy** | **Precision** | **Recall** | **F1-score** |
 |---------------------------:|-------------:|--------------:|-----------:|-------------:|
-|  Baseline model            |     84.53%   |     85.3%     |    84.5%   |     84.03%   |
+|      Baseline model        |     84.53%   |     85.3%     |    84.5%   |     84.03%   |
 |  Baseline model - attacked |     84.03%   |     84.8%     |    84.42%  |     83.92%   |
 
 **MobileNetV2 Deffensive Distilation model**
