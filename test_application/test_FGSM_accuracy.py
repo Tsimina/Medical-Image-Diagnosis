@@ -15,8 +15,10 @@ import matplotlib.pyplot as plt
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
 
-data_dir = r'path_to_your_data_directory'
-weights_path = r'path_to_your_model_weights.pth'
+ROOT_DIR = r'path_to_your_data_directory'
+MODEL_PATH = r'path_to_your_model_weights.pth'
+
+RESULTS_DIR = r'path_to_your_results_directory'
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD  = [0.229, 0.224, 0.225]
@@ -35,7 +37,7 @@ def get_test_loader(batch_size=32):
         transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
     ])
 
-    test_ds = datasets.ImageFolder(f"{data_dir}/test", transform=eval_tf)
+    test_ds = datasets.ImageFolder(f"{ROOT_DIR}/test", transform=eval_tf)
     test_loader = DataLoader(
         test_ds,
         batch_size=batch_size,
@@ -50,12 +52,12 @@ def get_test_loader(batch_size=32):
 
 
 # Model Loading
-def load_mobilenetv2(weights_path, num_classes):
+def load_mobilenetv2(MODEL_PATH, num_classes):
     model = mobilenet_v2(weights=None)
     in_features = model.classifier[1].in_features
     model.classifier[1] = nn.Linear(in_features, num_classes)
     state_dict = torch.load(
-        weights_path,
+        MODEL_PATH,
         map_location=device,
         weights_only=True,  
     )
@@ -93,7 +95,7 @@ def main():
     test_loader, n_classes = get_test_loader(batch_size=32)
 
     # Model
-    model = load_mobilenetv2(weights_path, num_classes=n_classes)
+    model = load_mobilenetv2(MODEL_PATH, num_classes=n_classes)
     criterion = nn.CrossEntropyLoss()
 
     # Tensors
@@ -140,9 +142,8 @@ def main():
         accuracies.append(adv_acc)
         results_rows.append((eps, adv_loss, adv_acc, adv_prec, adv_rec, adv_f1))
 
-    # After loop: save CSV and plot
-    results_dir = r'path_to_your_results_directory'
-    os.makedirs(results_dir, exist_ok=True)
+    # After loop save  plot
+    os.makedirs(RESULTS_DIR, exist_ok=True)
 
     # Plot
     plt.figure(figsize=(8, 5))
@@ -151,7 +152,7 @@ def main():
     plt.ylabel('Accuracy')
     plt.title('FGSM: Accuracy vs Epsilon distilled model')
     plt.grid(alpha=0.3)
-    plot_path = os.path.join(results_dir, f'fgsm_accuracy_vs_epsilon.png')
+    plot_path = os.path.join(RESULTS_DIR, f'fgsm_accuracy_vs_epsilon.png')
     plt.savefig(plot_path, dpi=150, bbox_inches='tight')
     plt.close()
 
