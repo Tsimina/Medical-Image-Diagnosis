@@ -141,6 +141,14 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+
+**Get training dataset**
+```
+cd Medical-Image-Diagnosis
+python -m dataset.import_data
+```
+
+**Train**
 To train your own model you just need to update with the paths to your dataset and results directory in the *_config.py files, depending on the target you want to achive you can also change the hyperparameters. 
 - DATA_DIR – path to your chest X-ray dataset
 - RESULTS_DIR – where to save logs, models, plots
@@ -153,7 +161,7 @@ cd Medical-Image-Diagnosis
 python -m src.train_<model_name>
 ```
 
-## Testing
+**Testing**
 To test the saved models (or the ones you trained) you need to run the following command:
 ```
 cd Medical-Image-Diagnosis
@@ -162,7 +170,7 @@ python -m test_application.test_<model_name>_accuracy
 
 ## Perfromance
 
-### MobileNetV2 Baseline – Test Performance
+**MobileNetV2 Baseline – Test Performance**
 
 For our experiments, we observed that the training curves tend to plateau around epoch 25.
 The baseline model registerd very good results results on clean data:
@@ -175,14 +183,14 @@ The baseline model registerd very good results results on clean data:
 
  > Figure: ROC Curve for MobileNetV2 (AUC = 0.93).
 
-### MobileNetV2 with Lipschitz Regularization – Test Performance
+**MobileNetV2 with Lipschitz Regularization – Test Performance**
 
 
-### MobileNetV2 Deffensive Distilation model
+**MobileNetV2 Deffensive Distilation model**
 
 Improvements are largest at moderate noise (ϵ = 0.03), reaching over +23 pp. Higher temperature (T = 50) provides a small but consistent advantage over T = 35.
 
-### Accuracy Improvements of Defensive Distillation vs. Baseline (FGSM Attack)
+**Accuracy Improvements of Defensive Distillation vs. Baseline (FGSM Attack)**
 
 | **ε**  | **Baseline Acc**  | **T = 35 Acc** |   **Imp.**    | **T = 50 Acc** |   **Imp.**    |
 |--------|------------------:|---------------:|--------------:|---------------:|--------------:|
