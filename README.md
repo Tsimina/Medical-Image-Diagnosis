@@ -153,11 +153,12 @@ python -m dataset.import_data
 ```
 
 **Train**
+
 To train your own model you just need to update with the paths to your dataset and results directory in the *_config.py files, depending on the target you want to achive you can also change the hyperparameters. 
 - DATA_DIR – path to your chest X-ray dataset
 - RESULTS_DIR – where to save logs, models, plots
-- BASELINE_WEIGHTS, DISTILLED_WEIGHTS
-- Training hyperparameters: EPOCHS_BASELINE, EPOCHS_DISTILL, BATCH_TRAIN, BATCH_EVAL, LR
+- Path to trained model weights
+- Training hyperparameters: EPOCHS, BATCH_TRAIN, BATCH_EVAL, LR
 - Distillation: T (temperature), ALPHA
   
 ```
@@ -166,6 +167,7 @@ python -m src.train_<model_name>
 ```
 
 **Testing**
+
 To test the saved models (or the ones you trained) you need to run the following command:
 ```
 cd Medical-Image-Diagnosis
