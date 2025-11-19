@@ -192,5 +192,5 @@ Both distilled models show slower accuracy degradation across all perturbation l
   > Figure: Perfromance comaprison to different perturbation values.
 
 ## Acknoledgments 
-Contribuitors: Manolache Arianna, 
+Contribuitors: Manolache Arianna, Stroe Teodora-Simina
 
