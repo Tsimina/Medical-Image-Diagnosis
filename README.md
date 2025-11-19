@@ -172,6 +172,7 @@ The baseline model registerd very good results results on clean data:
 |  0.6579  |    82.2%     |     86.2%     |   77.1%    |    78.8%     |
 
 <img width="520" height="402" alt="roc_curve_mobilenetv2" src="https://github.com/user-attachments/assets/6d3a2f20-acc9-4283-9766-67c3521a4fb0" />
+
  > Figure: ROC Curve for MobileNetV2 (AUC = 0.93).
 
 ### MobileNetV2 with Lipschitz Regularization – Test Performance
@@ -192,6 +193,7 @@ Improvements are largest at moderate noise (ϵ = 0.03), reaching over +23 pp. Hi
 Both distilled models show slower accuracy degradation across all perturbation levels.
 
 <img width="1445" height="362" alt="comparatie " src="https://github.com/user-attachments/assets/2919d9b8-13ab-4018-8676-f39e2b591f6a" />
+
   > Figure: Perfromance comaprison to different perturbation values.
 
 ## Acknoledgments 
