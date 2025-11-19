@@ -104,8 +104,10 @@ def main():
             best_val_acc = val_acc
             torch.save(student.state_dict(), DISTILLED_WEIGHTS)
 
+        metrics_path = os.path.join(RESULTS_DIR, "metrics_distilled_mobilenetv2.txt")
+
         if ep % 5 == 0:
-            metrics_file = os.path.join(r'path_to_saved_models', "metrics_distilled_mobilenetv2.txt")
+            metrics_file = os.path.join(metrics_path)
             save_metrics_file(metrics_file, ep, (tr_loss, tr_acc, tr_prec, tr_rec, tr_f1), (val_loss, val_acc, val_prec, val_rec, val_f1))
             print(f"  Saved metrics to {metrics_file}")
 
