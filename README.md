@@ -66,7 +66,7 @@ A black-box attack that finds a misclassification by changing only one pixel in 
 image.
 Does not require model gradients; instead it evaluates only the model’s outputs.
 Uses an evolutionary algorithm (e.g., differential evolution) to search for:
-      $\x′ = x + δ(i,j)$
+      $x′ = x + δ(i,j)$
 where δ(i,j) modifies a single pixel at position (i, j).
 
 ### FGSM 
@@ -75,7 +75,7 @@ A white-box attack that uses the model’s gradients to find the direction that 
 the loss the most.
 Creates an adversarial example by adding a small, targeted perturbation to the input
 image:
-     $\x′ = x + ϵ · sign(∇x J(x, y ))$
+     $x′ = x + ϵ · sign(∇x J(x, y ))$
 The parameter ϵ controls the strength of the perturbation.
 Called “sign” because it uses only the sign of the gradient (+1 or −1) to decide the
 direction of each pixel change.
