@@ -201,13 +201,40 @@ The baseline model registerd very good results results on clean data:
 
 First we computed the metrics for baseline model that was attacked using the One-Pixel method.
 
-|       **Model**            | **Accuracy** | **Precision** | **Recall** | **F1-score** |
-|---------------------------:|-------------:|--------------:|-----------:|-------------:|
-|      Baseline model        |     84.53%   |     85.3%     |    84.5%   |     84.03%   |
-|  Baseline model - attacked |     84.03%   |     84.8%     |    84.42%  |     83.92%   |
+| **Parameters** | **Accuracy** | **Precision** | **Recall** | **F1-score** |
+|----------------|--------------|---------------|------------|--------------|
+| population = 60  
+iterations = 120  
+F = 0.5  
+CR = 0.9 | 0.82 | 0.85 | 0.77 | 0.78 |
+| population = 200  
+iterations = 120  
+F = 0.7  
+CR = 1 | 0.819 | 0.84 | 0.768 | 0.773 |
+| population = 60  
+iterations = 120  
+F = 0.5  
+CR = 1 (3 pixels) | 0.819 | 0.84 | 0.767 | 0.769 |
 
-**MobileNetV2 Deffensive Distilation model**
+**Accuracy Improvements of  Lipschitz Regularization vs. Baseline (One-Pixel Attack)**
+| **Parameters** | **Accuracy** | **Precision** | **Recall** | **F1-score** |
+|----------------|--------------|---------------|------------|--------------|
+| population = 60  
+iterations = 120  
+F = 0.5  
+CR = 0.9 | 0.819 | 0.82 | 0.75 | 0.76 |
+| population = 200  
+iterations = 120  
+F = 0.7  
+CR = 1 | 0.817 | 0.819 | 0.743 | 0.758 |
+| population = 60  
+iterations = 120  
+F = 0.5  
+CR = 1 (3 pixels) | 0.816 | 0.815 | 0.74 | 0.755 |
 
+
+
+**MobileNetV2 Deffensive Distilation model - Test Performance**
 
 Improvements are largest at moderate noise (ϵ = 0.03), reaching over +23 pp. Higher temperature (T = 50) provides a small but consistent advantage over T = 35.
 
@@ -224,6 +251,9 @@ Both distilled models show slower accuracy degradation across all perturbation l
 <img width="1445" height="362" alt="comparatie " src="https://github.com/user-attachments/assets/2919d9b8-13ab-4018-8676-f39e2b591f6a" />
 
   > Figure: Perfromance comaprison to different perturbation values.
+
+**Accuracy Improvements of  Lipschitz Regularization vs. Baseline (FGSM Attack)**
+We aslo tried to cross-validate the model trained with Lipschitz Regularization vs the Baseline model under FGSM attack.
 
 ## Acknoledgments 
 Contribuitors: Manolache Arianna, Stroe Teodora-Simina
