@@ -160,7 +160,15 @@ To train your own model you just need to update with the paths to your dataset a
 - Path to trained model weights
 - Training hyperparameters: EPOCHS, BATCH_TRAIN, BATCH_EVAL, LR
 - Distillation: T (temperature), ALPHA
-  
+
+```
+model_config ----------------------> train_model
+                            |
+MobileNetV2_model_function -|
+                            |
+model_metrics --------------|
+```
+
 ```
 cd Medical-Image-Diagnosis
 python -m src.train_<model_name>
