@@ -253,6 +253,7 @@ Both distilled models show slower accuracy degradation across all perturbation l
   > Figure: Perfromance comaprison to different perturbation values.
 
 **Accuracy Improvements of  Lipschitz Regularization vs. Baseline (FGSM Attack)**
+
 We aslo tried to cross-validate the model trained with Lipschitz Regularization vs the Baseline model under FGSM attack.
 
 ## Acknoledgments 
