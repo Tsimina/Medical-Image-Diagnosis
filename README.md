@@ -182,7 +182,7 @@ cd Medical-Image-Diagnosis
 python -m test_application.test_<model_name>_accuracy
 ```
 
-## Perfromance
+## Performance
 
 **MobileNetV2 Baseline – Test Performance**
 
@@ -196,6 +196,8 @@ The baseline model registerd very good results results on clean data:
 <img width="520" height="402" alt="roc_curve_mobilenetv2" src="https://github.com/user-attachments/assets/6d3a2f20-acc9-4283-9766-67c3521a4fb0" />
 
  > Figure: ROC Curve for MobileNetV2 (AUC = 0.93).
+
+## First pair of attack-defense - One-Pixel attack with Lipschitz regularization
 
 **MobileNetV2 with Lipschitz Regularization – Test Performance**
 
@@ -232,7 +234,7 @@ iterations = 120
 F = 0.5  
 CR = 1 (3 pixels) | 0.816 | 0.815 | 0.74 | 0.755 |
 
-
+## Second pair of attack-defense - FGSM with Deffensive Distilation
 
 **MobileNetV2 Deffensive Distilation model - Test Performance**
 
@@ -251,6 +253,8 @@ Both distilled models show slower accuracy degradation across all perturbation l
 <img width="1445" height="362" alt="comparatie " src="https://github.com/user-attachments/assets/2919d9b8-13ab-4018-8676-f39e2b591f6a" />
 
   > Figure: Perfromance comaprison to different perturbation values.
+
+## Second pair of attack-defense - FGSM with Lipschnitz regularization ( just for fun :) )
 
 **Accuracy Improvements of  Lipschitz Regularization vs. Baseline (FGSM Attack)**
 
