@@ -150,7 +150,7 @@ def main():
     plt.plot(epsilons, accuracies, marker='o', linestyle='-', color='tab:blue')
     plt.xlabel('Epsilon')
     plt.ylabel('Accuracy')
-    plt.title('FGSM: Accuracy vs Epsilon distilled model')
+    plt.title('FGSM: Accuracy vs Epsilon <name> model')
     plt.grid(alpha=0.3)
     plot_path = os.path.join(RESULTS_DIR, f'fgsm_accuracy_vs_epsilon.png')
     plt.savefig(plot_path, dpi=150, bbox_inches='tight')

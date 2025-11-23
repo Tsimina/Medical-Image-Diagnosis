@@ -1,0 +1,11 @@
+(venv_ia3) PS E:\master an 2\ia3\proiect> & "E:/master an 2/ia3/proiect/venv_ia3/Scripts/python.exe" "e:/master an 2/ia3/proiect/Medical-Image-Diagnosis/test_application/classification_test.py"
+Model loaded successfully.
+Found 812 images.
+Loaded 2000 true labels.
+Evaluated 808 valid test images.
+
+===== TEST SET METRICS =====
+Accuracy:  0.8119
+Precision: 0.8220
+Recall:    0.7501
+F1-score:  0.7608

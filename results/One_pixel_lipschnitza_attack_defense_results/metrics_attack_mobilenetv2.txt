@@ -1,9 +1,0 @@
-Found 812 images.
-Loaded 2000 true labels.
-Evaluated 808 valid test images.
-
-===== TEST SET METRICS =====
-Accuracy:  0.8403
-Precision: 0.8480
-Recall:    0.8403
-F1-score:  0.8392

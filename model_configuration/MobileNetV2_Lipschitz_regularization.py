@@ -59,13 +59,13 @@ n_classes = len(train_ds.classes)
 in_features = model.classifier[1].in_features
 model.classifier[1] = nn.Linear(in_features, n_classes)
 
-### ---- APPLY SPECTRAL NORMALIZATION ---- #### LIPSCHITZ ####
+# Apply Spectral Normalization
 def apply_spectral_norm(m):
     if isinstance(m, (nn.Conv2d, nn.Linear)):
         return nn.utils.spectral_norm(m)
     return m
 
-model = model.apply(apply_spectral_norm)   # apply to all layers
+model = model.apply(apply_spectral_norm)   
 
 model = model.to(device)
 
@@ -75,7 +75,7 @@ scaler = GradScaler(enabled=torch.cuda.is_available())
 
 
 
-#### LIPSCHITZ ####
+# Lipschitz Regularization Term
 def lipschitz_penalty(model, x, lambda_lip=0.05):
     # Penalizes || gradient_x (model output) ||^2
 
@@ -136,7 +136,7 @@ def train_one_epoch(loader):
             out = model(x)
             ce_loss = criterion(out, y)
 
-            #### LIPSCHITZ LOSS ADDED ####
+            #
             lip_loss = lipschitz_penalty(model, x, lambda_lip=0.05)
 
             loss = ce_loss + lip_loss
