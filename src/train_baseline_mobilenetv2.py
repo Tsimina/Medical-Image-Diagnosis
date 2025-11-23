@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 from model_configuration.baseline_config import *
-from model_configuration.Mobilenetv2_model import create_mobilenet_v2
+from model_configuration.MobileNetV2_baseline_model import create_mobilenet_v2
 from utils.baseline_metrics import compute_metrics, save_metrics_file
 
 def get_loaders():

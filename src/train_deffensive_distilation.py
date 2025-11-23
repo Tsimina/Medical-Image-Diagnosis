@@ -7,7 +7,7 @@ from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
 import numpy as np
 from model_configuration.deffensive_distilation_config import *
-from model_configuration.Mobilenetv2_model import create_mobilenet_v2
+from model_configuration.MobileNetV2_baseline_model import create_mobilenet_v2
 from utils.deffensive_distilation_metrics import *
 
 
