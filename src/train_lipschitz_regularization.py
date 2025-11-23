@@ -4,8 +4,8 @@ import torch.optim as optim
 from torch.amp import GradScaler
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from model_configuration.lipschnitz_regularization_config import *
-from model_configuration.MobileNetV2_lipschnitz_model import create_lipschitz_mobilenet
+from model_configuration.lipschitz_regularization_config import *
+from model_configuration.MobileNetV2_lipschitz_model import create_lipschitz_mobilenet
 from utils.lipschnitz_regularization_metrics import compute_metrics
 
 
