@@ -166,7 +166,7 @@ model_metrics --------------|
 - RESULTS_DIR – where to save logs, models, plots
 - Path to trained model weights
 - Training hyperparameters: EPOCHS, BATCH_TRAIN, BATCH_EVAL, LR
-- Distillation: T (temperature), ALPHA
+- Specific hyperparameters for each defense model configuration
 
 To start the training process run the following command:
 ```
@@ -175,6 +175,8 @@ python -m src.train_<model_name>
 ```
 
 **Testing**
+
+For the directory that contains the test images you  just need to provide the ROOT of the file.
 
 To test the saved models (or the ones you trained) you need to run the following command:
 ```
@@ -259,6 +261,17 @@ Both distilled models show slower accuracy degradation across all perturbation l
 **Accuracy Improvements of  Lipschitz Regularization vs. Baseline (FGSM Attack)**
 
 We aslo tried to cross-validate the model trained with Lipschitz Regularization vs the Baseline model under FGSM attack.
+| **ε**  | **Baseline Acc**  |   Lipschnitz   |   **Imp.**    | 
+|--------|------------------:|---------------:|--------------:|
+|  0.03  |      28.7%        |     45.7%      |   +16.7 pp    |   
+|  0.05  |      25.6%        |     36.7%      |   +11.1 pp    |     
+|  0.08  |      25.6%        |     30.3%      |   +4.7 pp     |     
+
+The model trained with Lipschitz Regularization is clearly more robust than the baseline, showing consistent accuracy improvements under FGSM attack across all tested ε values.
+
+<img width="1640" height="557" alt="lip_fgms" src="https://github.com/user-attachments/assets/77fe210e-0a8a-4a97-8f35-9eecc206b376" />
+
+   > Figure: Perfromance comaprison to different perturbation values.
 
 ## Acknoledgments 
 Contribuitors: Manolache Arianna, Stroe Teodora-Simina
