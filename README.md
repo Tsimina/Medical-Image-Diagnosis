@@ -11,7 +11,6 @@ The goal is to compare the **baseline model** vs **defended models** on clean an
 
 ## Table of Contents
 
-- [Medical-Image-Diagnosis](#medical-image-diagnosis)
 - [Features](#features)
 - [Repository structure](#repository-structure)
 - [Dataset](#dataset)
