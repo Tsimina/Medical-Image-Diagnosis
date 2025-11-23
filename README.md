@@ -320,7 +320,7 @@ We also tried to cross-validate the model trained with Lipschitz Regularization 
 
 The model trained with Lipschitz Regularization is clearly more robust than the baseline, showing consistent accuracy improvements under FGSM attack across all tested ε values.
 
-<img width="1640" height="557" alt="lip_fgms" src="https://github.com/user-attachments/assets/77fe210e-0a8a-4a97-8f35-9eecc206b376" />
+<img width="1637" height="562" alt="lip_fgms" src="https://github.com/user-attachments/assets/7470f8a8-502e-4bad-b042-dde07b207701" />
 
    > Figure: performance comparison to different perturbation values.
 
