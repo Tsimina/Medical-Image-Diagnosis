@@ -173,12 +173,15 @@ pip install -r requirements.txt
 
 **Get training dataset**
 
-The dataset is already split into subdirectories train/test/val, for the train and test application you just need to provide the ROOT of the directory.
+The dataset will be downloaded locally from Kaggle by running this script:
 
 ```
 cd Medical-Image-Diagnosis
 python -m dataset.import_data
 ```
+
+> [!IMPORTANT] 
+> The dataset is already split into subdirectories train/test/val, for the train and test application you just need to provide the ROOT of the directory.
 
 **Train**
 
@@ -216,13 +219,14 @@ python -m src.train_deffensive_distilation
 
 **Testing**
 
-For the directory that contains the test images you  just need to provide the ROOT of the file.
-
 To test the saved models (or the ones you trained) you need to run the following command:
 ```
 cd Medical-Image-Diagnosis
 python -m test_application.test_<attack>_accuracy
 ```
+
+> [!IMPORTANT] 
+> For the directory that contains the test images you  just need to provide the ROOT of the file.
 
 **Example**
 ```
