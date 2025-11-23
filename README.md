@@ -35,20 +35,20 @@ Medical-Image-Diagnosis/
 ├── model_configuration/     # Configs (paths, hyperparameters, model factory, etc.)
 │   ├── model_config.py      # Contains hyperparameters and paths to the train dataset
 │   └── Mobilenetv2.py       # Model function
-├── results/                 # Saved weights, metrics logs, ROC curves, evaluation attckk plots, etc.
+├── results/                 # Saved weights, metrics logs, ROC curves, evaluation attack plots, etc.
 ├── src/                     # Training & evaluation scripts (baseline + defences)
 ├── test_application/        # Simple tests for the saved models
 |   ├── saved_models         # Saved model configs for baseline and defence  
 ├── utils/                   # Metrics, training helpers, distillation utilities
 │
-├── requirments.txt          # Python dependencies (pip install -r)
+├── requirements.txt          # Python dependencies (pip install -r)
 ├── LICENSE                  # MIT License
 └── README.md
 ```
 
 ## Dataset 
 
-Our MobileNetV2 was traint on the Kaggle *Chest X-Ray Images (Pneumonia)*. You can download the dataset here: [Chest X-Ray Images (Pneumonia)](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia). 
+Our MobileNetV2 was trained on the Kaggle *Chest X-Ray Images (Pneumonia)*. You can download the dataset here: [Chest X-Ray Images (Pneumonia)](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia). 
 
 <img width="716" height="220" alt="xray" src="https://github.com/user-attachments/assets/eabb0b86-54f4-43f5-b3ed-b7546b762e9b" />
 
@@ -90,7 +90,7 @@ direction of each pixel change.
 This repository contains 3 models:
 - Baseline MobileNetV2
 - MobileNetV2 with Lipschitz Regularization
-- MobileNetV2 Deffensive Distilation model
+- MobileNetV2 Defensive Distillation model
   
 ### Baseline MobileNetV2 configuration
 For the baseline configuration we utilised a clasic MobilenetV2 architecture.
@@ -110,11 +110,36 @@ Training setup:
 
 ### MobileNetV2 with Lipschitz Regularization
 
-### MobileNetV2 Deffensive Distilation model
-The Baseline MobileNetV2 serves as the teacher model.
-  - Distillation temperatures: T=35$ and T=50
-  - Mixing coefficient: alpha = 0.9 (focus on soft-label learning).
-  - Training: 25 epochs, Adam (LR = 0.001), batch sizes 8 (train) / 16 (eval).
+This model applies two techniques to improve robustness:
+
+- **Spectral Normalization** on all convolutional and fully connected layers  
+  Ensures the network has bounded Lipschitz constant.
+
+- **Gradient Penalty (Lipschitz penalty)**  
+  Adds a regularization term:  
+  \[
+  L_{lip} = \lambda \cdot \| \nabla_x f(x) \|_2^2
+  \]  
+  This reduces sensitivity to small perturbations and improves adversarial robustness.
+
+- **Training Loss:**  
+  \[
+  L = L_{\text{cross-entropy}} + L_{\text{lip}}
+  \]
+
+### MobileNetV2 with Defensive Distillation
+
+We trained the distilled model using:
+
+- **Teacher model:** baseline MobileNetV2  
+- **Student model:** same architecture, trained on *soft labels*
+- **Temperature:** T = 50  
+- **Soft + Hard loss:**  
+  \[
+  L = \alpha \cdot L_{soft}(T) + (1-\alpha) \cdot L_{hard}
+  \]
+
+Soft probabilities from the teacher smooth the decision boundaries, making the model harder to attack.
 
 ## Requirements
 - Python 3.7 or later  
@@ -147,6 +172,9 @@ pip install -r requirements.txt
 ## Usage
 
 **Get training dataset**
+
+The dataset is already split into subdirectories train/test/val, for the train and test application you just need to provide the ROOT of the directory.
+
 ```
 cd Medical-Image-Diagnosis
 python -m dataset.import_data
@@ -174,6 +202,18 @@ cd Medical-Image-Diagnosis
 python -m src.train_<model_name>
 ```
 
+**Example**
+```
+# Baseline
+python -m src.train_baseline_mobilenetv2
+
+# Lipschitz regularization
+python -m src.train_Lipschitz_regularization
+
+# Defensive Distillation
+python -m src.train_deffensive_distilation
+```
+
 **Testing**
 
 For the directory that contains the test images you  just need to provide the ROOT of the file.
@@ -181,7 +221,16 @@ For the directory that contains the test images you  just need to provide the RO
 To test the saved models (or the ones you trained) you need to run the following command:
 ```
 cd Medical-Image-Diagnosis
-python -m test_application.test_<model_name>_accuracy
+python -m test_application.test_<attack>_accuracy
+```
+
+**Example**
+```
+# One-Pixel attack
+python -m test_application.test_One_Pixel_attack_accuracy
+
+# FGSM attack
+python -m python -m test_application.test_FGSM_attack_accuracy
 ```
 
 ## Performance
@@ -189,7 +238,7 @@ python -m test_application.test_<model_name>_accuracy
 **MobileNetV2 Baseline – Test Performance**
 
 For our experiments, we observed that the training curves tend to plateau around epoch 25.
-The baseline model registerd very good results results on clean data:
+The baseline model registered very good results results on clean data:
 
 | **Loss** | **Accuracy** | **Precision** | **Recall** | **F1-score** |
 |---------:|-------------:|--------------:|-----------:|-------------:|
@@ -236,9 +285,11 @@ iterations = 120
 F = 0.5  
 CR = 1 (3 pixels) | 0.816 | 0.815 | 0.74 | 0.755 |
 
-## Second pair of attack-defense - FGSM with Deffensive Distilation
+**Lipschitz improves robustness against One-Pixel (+4.6 pp accuracy).**
 
-**MobileNetV2 Deffensive Distilation model - Test Performance**
+## Second pair of attack-defense - FGSM with Defensive Distillation
+
+**MobileNetV2 Defensive Distillation model - Test Performance**
 
 Improvements are largest at moderate noise (ϵ = 0.03), reaching over +23 pp. Higher temperature (T = 50) provides a small but consistent advantage over T = 35.
 
@@ -254,14 +305,14 @@ Both distilled models show slower accuracy degradation across all perturbation l
 
 <img width="1445" height="362" alt="comparatie " src="https://github.com/user-attachments/assets/2919d9b8-13ab-4018-8676-f39e2b591f6a" />
 
-  > Figure: Perfromance comaprison to different perturbation values.
+  > Figure: performance comparison to different perturbation values.
 
-## Second pair of attack-defense - FGSM with Lipschnitz regularization ( just for fun :) )
+## Second pair of attack-defense - FGSM with Lipschitz regularization ( just for fun :) )
 
 **Accuracy Improvements of  Lipschitz Regularization vs. Baseline (FGSM Attack)**
 
-We aslo tried to cross-validate the model trained with Lipschitz Regularization vs the Baseline model under FGSM attack.
-| **ε**  | **Baseline Acc**  |   Lipschnitz   |   **Imp.**    | 
+We also tried to cross-validate the model trained with Lipschitz Regularization vs the Baseline model under FGSM attack.
+| **ε**  | **Baseline Acc**  |   Lipschitz   |   **Imp.**    | 
 |--------|------------------:|---------------:|--------------:|
 |  0.03  |      28.7%        |     45.7%      |   +16.7 pp    |   
 |  0.05  |      25.6%        |     36.7%      |   +11.1 pp    |     
@@ -271,7 +322,12 @@ The model trained with Lipschitz Regularization is clearly more robust than the 
 
 <img width="1640" height="557" alt="lip_fgms" src="https://github.com/user-attachments/assets/77fe210e-0a8a-4a97-8f35-9eecc206b376" />
 
-   > Figure: Perfromance comaprison to different perturbation values.
+   > Figure: performance comparison to different perturbation values.
+
+## Limitation
+
+- Only two adversarial attacks were tested (FGSM, One-Pixel).  
+  Future work: PGD, DeepFool, CW attack.
 
 ## Acknoledgments 
 Contribuitors: Manolache Arianna, Stroe Teodora-Simina
