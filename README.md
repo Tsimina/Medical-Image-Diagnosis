@@ -9,40 +9,20 @@ This project trains a **MobileNetV2** classifier on the Kaggle *Chest X-Ray Imag
 
 The goal is to compare the **baseline model** vs **defended models** on clean and adversarial examples.
 
-## Table of contents 
+## Table of Contents
 
+- [Medical-Image-Diagnosis](#medical-image-diagnosis)
 - [Features](#features)
-- [Repository Structure](#repository-structure)
-
+- [Repository structure](#repository-structure)
 - [Dataset](#dataset)
-  - [Dataset Structure](#dataset-structure)
-  - [Importing the Dataset](#importing-the-dataset)
-
-- [Models Implemented](#models-implemented)
-  - [Baseline MobileNetV2](#baseline-mobilenetv2)
-  - [Defensive Distillation](#defensive-distillation)
-  - [Lipschitz Regularization](#lipschitz-regularization)
-
-- [Training Scripts](#training-scripts)
-  - [Train Baseline Model](#train-baseline-model)
-  - [Train Distilled Model](#train-distilled-model)
-  - [Train Lipschitz Model](#train-lipschitz-model)
-
-- [Evaluation Scripts](#evaluation-scripts)
-  - [Baseline Evaluation](#baseline-evaluation)
-  - [Distilled Evaluation](#distilled-evaluation)
-  - [Lipschitz Evaluation](#lipschitz-evaluation)
-
-- [Adversarial Attacks](#adversarial-attacks)
-  - [FGSM Attack](#fgsm-attack)
-  - [One Pixel Attack](#one-pixel-attack)
-
-- [FGSM Performance Results](#fgsm-performance-results)
-- [One-Pixel Attack Results](#one-pixel-attack-results)
-
-- [Future Work](#future-work)
-- [How to Run](#how-to-run)
+- [Attacks](#attacks)
+- [Model Details](#model-details)
 - [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Performance](#performance)
+- [Limitation](#limitation)
+- [Acknoledgments](#acknoledgments)
 
 ## Features
 
